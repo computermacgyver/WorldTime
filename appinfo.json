@@ -1,12 +1,12 @@
 {
-    "versionLabel": "1.2",
+    "versionLabel": "0.1",
     "capabilities": [
         "configurable"
     ],
-    "shortName": "World Time",
-    "longName": "World Time",
-    "versionCode": 2,
-    "uuid": "4e2ae2a7-ad7e-4955-a228-13ec4179dd35",
+    "shortName": "World Clock",
+    "longName": "World Clock",
+    "versionCode": 1,
+    "uuid": "1e6fc8d6-c6ea-4a43-8540-54ae2bbab727",
     "resources": {
         "media": [
             {
@@ -39,6 +39,12 @@
                 "file": "fonts/futura_condensed_bold-webfont.ttf",
                 "characterRegex": "[0-9:]",
                 "name": "FUTURA_CONDENSED_53"
+            },
+            {
+            	"type":	"font",
+            	"file":	"fonts/mincho.ttf",
+            	"characterRegex": "[0-9日月火水木金土時一二三四五六]",
+            	"name":	"MINCHO_16"
             }
         ]
     },
@@ -47,14 +53,15 @@
     },
     "appKeys": {
         "invert_color": 8,
-        "TZ3Time": 7,
-        "TZ2Time": 5,
-        "language": 0,
-        "TZ2Name": 4,
-        "TZ3Name": 6,
         "TZ1Time": 3,
-        "LocalTime": 1,
-        "TZ1Name": 2
+        "TZ1Name": 2,
+        "TZ2Time": 5,
+        "TZ2Name": 4,                        
+        "TZ3Time": 7,
+        "TZ3Name": 6,
+        "language": 0,
+        "LocalTime": 1
+
     },
-    "companyName": "dabdemon"
+    "companyName": "Computermacgyver"
 }

@@ -62,7 +62,7 @@ PBL_APP_INFO(MY_UUID,
 	TextLayer *Max_Layer;			//Layer for the Max Temperature
 	TextLayer *Min_Layer;			//Layer for the Min Temperature
 	*/
-	static GBitmap *BT_image;
+	static GBitmap *BT_image=NULL;
 	static BitmapLayer *BT_icon_layer; //Layer for the BT connection
 
 	static GBitmap *Batt_image;
@@ -75,13 +75,14 @@ PBL_APP_INFO(MY_UUID,
 	GFont font_time;        // Font for time
 	GFont font_update;      // Font for last update
 	GFont font_temperature;	// Font for the temperature
+	GFont font_cj;			// Font for Chinese, Japanese
 
 	//Vibe Control
-	bool BTConnected = true;
+	bool BTConnected = false;
 
 	//Date & Time	
 	static char last_update[]="00:00 ";
-	static int initial_minute;
+	//static int initial_minute; //Not used -- SAH
 
 	static char weekday_text[] = "          ";
 	static char date_text[] = "XXX 00";
@@ -283,7 +284,27 @@ static const char *WEEKDAYS[] = {
 	"Torsdag",
 	"Fredag", 
 	"Lørdag",
-	"Søndag ",  
+	"Søndag ",
+};
+static const char *WEEKDAYS_JA[]={
+	//Japanese - 98
+	"月",
+	"火",
+	"水",
+	"木",
+	"金",
+	"土",
+	"日"
+};
+static const char *WEEKDAYS_ZH[]={
+	//Chinese - 99
+	"ー",
+	"二",
+	"三",
+	"四",
+	"五",
+	"六",
+	"日"	
 };
 
 static const char *MONTHS[] = {
@@ -511,28 +532,25 @@ static void handle_bluetooth(bool connected)
 
 	//draw the BT icon if connected
 
-	if(connected ==true)
-	{
-		if (BT_image) {gbitmap_destroy(BT_image);}
-			BT_image = gbitmap_create_with_resource(RESOURCE_ID_BT_CONNECTED);
-            bitmap_layer_set_bitmap(BT_icon_layer, BT_image);
-		if (BTConnected == false){
-			//Vibes to alert connection
-			vibes_double_pulse();
-			BTConnected = true;
+	if(connected && !BTConnected) {
+		if (BT_image!=NULL) {
+			gbitmap_destroy(BT_image);
 		}
-	}
-	else
-	{
+		BT_image = gbitmap_create_with_resource(RESOURCE_ID_BT_CONNECTED);
+        bitmap_layer_set_bitmap(BT_icon_layer, BT_image);
+		//Vibes to alert connection
+		//vibes_double_pulse(); //That's annoying --SAH
+		BTConnected = true;
+	} else if (!connected && BTConnected) {
 		 //Kill the previous image
-		    if (BT_image) {gbitmap_destroy(BT_image);}
-            bitmap_layer_set_bitmap(BT_icon_layer, NULL);
-		if (BTConnected == true){
-			//Vibes to alert disconnection
-			vibes_long_pulse();
-			BTConnected = false;
-		}
-
+	    if (BT_image!=NULL) {
+	    	gbitmap_destroy(BT_image);
+	    	BT_image=NULL;
+	    }
+		bitmap_layer_set_bitmap(BT_icon_layer, NULL);
+		//Vibes to alert disconnection
+		//vibes_long_pulse(); //That's annoying -- SAH
+		BTConnected = false;
 	}
 
 
@@ -570,8 +588,7 @@ void getDate()
 	//Get the date
 	time_t actualPtr = time(NULL);
 	struct tm *tz1Ptr = gmtime(&actualPtr);
-	
-	
+		
 	//Try new translation method
 		
 		//Get the number of the weekday
@@ -585,38 +602,46 @@ void getDate()
 		if (month_text[0]=='1'){ic=ic+10;}			
 		int id = (intLanguage*12)+ic;
 	
-	if(intLanguage==100){ //ENGLISH
+	if(intLanguage==100||intLanguage==101){ //ENGLISH (100)
 		
 		//remove the chinese week day
 		//if (chinese_day) {gbitmap_destroy(chinese_day);}
 		//bitmap_layer_set_bitmap(chinese_day_layer, NULL);
 		
-		//Get the English fortmat
-		strftime(month_text,sizeof(month_text),"%B %e",tz1Ptr);
+		if (intLanguage==100) {
+			//Get the English (US) format - 100
+			strftime(month_text,sizeof(month_text),"%B %e",tz1Ptr);
+		} else {
+			//Get the English (UK) format - 101
+			strftime(month_text,sizeof(month_text),"%e %B",tz1Ptr);
+		}
 		strftime(weekday_text,sizeof(weekday_text),"%A",tz1Ptr);
 		
 		text_layer_set_text(Weekday_Layer,weekday_text); //Update the weekday layer  
 		text_layer_set_text(date_layer,month_text); 
 		
 	}
-	/*
-	else if (language==99){//CHINESE
+	else if (intLanguage==98||intLanguage==99){//	Japanese/Chinese
 		
 		//Work on retrieving the correct weekday
 		//Get the Month
-		strftime(month_text,sizeof(month_text),"%m/%d",tz1Ptr);
+		strftime(month_text,sizeof(month_text),"%m月%d日",tz1Ptr);
 		
 		//Clean un the text layer
-		text_layer_set_text(Weekday_Layer,"");
+		//text_layer_set_text(Weekday_Layer,"");
+		if (intLanguage==98)
+			text_layer_set_text(Weekday_Layer, WEEKDAYS_JA[ia-1]); //Japanese weekday
+		else
+			text_layer_set_text(Weekday_Layer, WEEKDAYS_ZH[ia-1]); //Chinese weekday
 		
-		if (chinese_day) {gbitmap_destroy(chinese_day);}
+		/*if (chinese_day) {gbitmap_destroy(chinese_day);}
 		chinese_day = gbitmap_create_with_resource(CHINESE_DAYS[ia-1]);
 		//Display the weekday in chinese
-		bitmap_layer_set_bitmap(chinese_day_layer, chinese_day);
+		bitmap_layer_set_bitmap(chinese_day_layer, chinese_day);*/
 		text_layer_set_text(date_layer, month_text);
 		
 	}
-	*/
+	
 
 	else{
 		//remove the chinese week day
@@ -936,10 +961,11 @@ void handle_init(void)
 	ResHandle res_u;
 	ResHandle res_t;
 	ResHandle res_temp;
+	ResHandle res_cj;
 	
 	
 	// read saved settings
-	intLanguage=persist_read_int(Language_KEY);
+	intLanguage=persist_read_int(Language_KEY); //TODO: Set here to override language (until Japanese - 98 and Chinese - 99 are in options).
 	intLocalTime=persist_read_int(LocalTime_KEY);
 	persist_read_string(TZ1Name_KEY, tz1_name, sizeof(tz1_name));
 	intTZ1=persist_read_int(TZ1Time_KEY);
@@ -959,12 +985,14 @@ void handle_init(void)
 	res_t = resource_get_handle(RESOURCE_ID_FUTURA_CONDENSED_53); // Time font
 	res_d = resource_get_handle(RESOURCE_ID_FUTURA_17); // Date font
 	res_u = resource_get_handle(RESOURCE_ID_FUTURA_14); // Last Update font
+	res_cj = resource_get_handle(RESOURCE_ID_MINCHO_16); //Font for Chinese and Japanese day of week, etc.
 	//res_temp =  resource_get_handle(RESOURCE_ID_FUTURA_36); //Temperature
 
 
     font_date = fonts_load_custom_font(res_d);
 	font_update = fonts_load_custom_font(res_u);
 	font_time = fonts_load_custom_font(res_t);
+	font_cj = fonts_load_custom_font(res_cj);
 
 
 	//LOAD THE LAYERS
@@ -972,7 +1000,11 @@ void handle_init(void)
 		Weekday_Layer = text_layer_create(WEEKDAY_FRAME);
 		text_layer_set_text_color(Weekday_Layer, GColorWhite);
 		text_layer_set_background_color(Weekday_Layer, GColorClear);
-		text_layer_set_font(Weekday_Layer, font_date);
+		if (intLanguage==98||intLanguage==99) {
+			text_layer_set_font(Weekday_Layer, font_cj);
+		} else {
+			text_layer_set_font(Weekday_Layer, font_date);
+		}
 		text_layer_set_text_alignment(Weekday_Layer, GTextAlignmentLeft);
 		layer_add_child(window_get_root_layer(my_window), text_layer_get_layer(Weekday_Layer)); 
 
@@ -998,6 +1030,9 @@ void handle_init(void)
 		date_layer = text_layer_create(DATE_FRAME);
 		text_layer_set_text_color(date_layer, GColorWhite);
 		text_layer_set_background_color(date_layer, GColorClear);
+		if (intLanguage==98||intLanguage==99)
+			text_layer_set_font(date_layer, font_cj);
+		else
 		text_layer_set_font(date_layer, font_date);
 		text_layer_set_text_alignment(date_layer, GTextAlignmentRight);
 		layer_add_child(window_get_root_layer(my_window), text_layer_get_layer(date_layer)); 
@@ -1102,7 +1137,7 @@ void handle_deinit(void)
  	battery_state_service_unsubscribe();
   	bluetooth_connection_service_unsubscribe();
 
-	//if (BT_image) {gbitmap_destroy(BT_image);}
+	if (BT_image!=NULL) {gbitmap_destroy(BT_image);}
 	//if (Batt_image){gbitmap_destroy(Batt_image);}
 
 	//Deallocate layers
@@ -1114,6 +1149,7 @@ void handle_deinit(void)
 	fonts_unload_custom_font(font_date);
 	fonts_unload_custom_font(font_update);
 	fonts_unload_custom_font(font_time);
+	fonts_unload_custom_font(font_cj);
 
 	//Deallocate the main window
   	window_destroy(my_window);
