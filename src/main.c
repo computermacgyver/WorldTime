@@ -65,7 +65,7 @@ PBL_APP_INFO(MY_UUID,
 	static GBitmap *BT_image=NULL;
 	static BitmapLayer *BT_icon_layer; //Layer for the BT connection
 
-	static GBitmap *Batt_image;
+	static GBitmap *Batt_image=NULL;
 	static BitmapLayer *Batt_icon_layer; //Layer for the Battery status
 
 
@@ -501,8 +501,12 @@ static void handle_battery(BatteryChargeState charge_state) {
           static char battery_text[] = "100%";
 	
 	//kill previous batt_image to avoid invalid ones.
-	if (Batt_image) {gbitmap_destroy(Batt_image);}
-    bitmap_layer_set_bitmap(Batt_icon_layer, NULL);
+	if (Batt_image!=NULL) {
+		gbitmap_destroy(Batt_image);
+		Batt_image=NULL;
+		bitmap_layer_set_bitmap(Batt_icon_layer, NULL);
+	}
+    
 
   if (charge_state.is_charging) {
     //snprintf(battery_text, sizeof(battery_text), "charging");
@@ -520,7 +524,7 @@ static void handle_battery(BatteryChargeState charge_state) {
 			 Batt_image = gbitmap_create_with_resource(RESOURCE_ID_BATT_EMPTY);
              bitmap_layer_set_bitmap(Batt_icon_layer, Batt_image);
          }
-}
+	}
 }
 
 //******************************//
@@ -634,6 +638,7 @@ void getDate()
 		else
 			text_layer_set_text(Weekday_Layer, WEEKDAYS_ZH[ia-1]); //Chinese weekday
 		
+		
 		/*if (chinese_day) {gbitmap_destroy(chinese_day);}
 		chinese_day = gbitmap_create_with_resource(CHINESE_DAYS[ia-1]);
 		//Display the weekday in chinese
@@ -668,6 +673,7 @@ void getDate()
 
 }
 
+//TODO: Simplify this code! -- SAH
 void getTimeZones(){
 	
 	time_t actualPtr = time(NULL);
@@ -934,18 +940,20 @@ void handle_tick(struct tm *tick_time, TimeUnits units_changed)
 
 
 			//Calculate the Dual Time
-			getTimeZones();
+			getTimeZones(); //TODO: If changing the timezones to only list hour and not minute, update this.
 
 			//Check Battery Status
-			handle_battery(battery_state_service_peek());
+			//handle_battery(battery_state_service_peek()); //SAH -- Don't check every minute
 
 			//Check BT Status
-			handle_bluetooth(bluetooth_connection_service_peek());
+			//handle_bluetooth(bluetooth_connection_service_peek()); //SAH -- Don't check every minute
 
 	} //MINUTE CHANGES
-	     if (units_changed & DAY_UNIT){
-			 	//Update the date
-			 	getDate();}
+
+	if (units_changed & DAY_UNIT){
+	 	//Update the date
+	 	getDate();
+	}
 } //HANDLE_TICK 
 
 
@@ -1138,7 +1146,7 @@ void handle_deinit(void)
   	bluetooth_connection_service_unsubscribe();
 
 	if (BT_image!=NULL) {gbitmap_destroy(BT_image);}
-	//if (Batt_image){gbitmap_destroy(Batt_image);}
+	if (Batt_image!=NULL){gbitmap_destroy(Batt_image);}
 
 	//Deallocate layers
 	text_layer_destroy(Time_Layer);
