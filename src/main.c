@@ -633,11 +633,18 @@ void getDate()
 		
 		//Clean un the text layer
 		//text_layer_set_text(Weekday_Layer,"");
-		if (intLanguage==98)
-			text_layer_set_text(Weekday_Layer, WEEKDAYS_JA[ia-1]); //Japanese weekday
-		else
+		if (intLanguage==98) {
+			//text_layer_set_text(Weekday_Layer, WEEKDAYS_JA[ia-1]); //Japanese weekday
+			text_layer_set_text(Weekday_Layer,"");
+			
+			//Put the Japanese weekday in parenthese after the date.
+			//concat(dest,src) src to the end of the string dest and null terminates dest.
+			char tmp_weekday[]="（月）";
+			snprintf(tmp_weekday,sizeof(tmp_weekday),"（%s）",WEEKDAYS_JA[ia-1]);
+			strcat(month_text,tmp_weekday);
+		} else {
 			text_layer_set_text(Weekday_Layer, WEEKDAYS_ZH[ia-1]); //Chinese weekday
-		
+		}
 		
 		/*if (chinese_day) {gbitmap_destroy(chinese_day);}
 		chinese_day = gbitmap_create_with_resource(CHINESE_DAYS[ia-1]);

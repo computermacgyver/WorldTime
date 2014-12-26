@@ -43,7 +43,7 @@
             {
             	"type":	"font",
             	"file":	"fonts/mincho.ttf",
-            	"characterRegex": "[0-9日月火水木金土時一二三四五六]",
+            	"characterRegex": "[0-9日月火水木金土時一二三四五六（）]",
             	"name":	"MINCHO_16",
             	"note":	"Font from http://ipafont.ipa.go.jp/ipaexfont/download.html#en"
             }
