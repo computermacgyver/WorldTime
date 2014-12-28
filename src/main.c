@@ -115,7 +115,7 @@ PBL_APP_INFO(MY_UUID,
 	static char TZ3[] = "00:00";
 
 	bool translate_sp = true;
-	static char language[] = "E";
+	//static char language[] = "E";//Never used --SAH
 	int intLanguage = 100;
 	bool color_inverted = false;
 	bool blninverted =  false;
@@ -980,7 +980,8 @@ void handle_init(void)
 	
 	
 	// read saved settings
-	intLanguage=persist_read_int(Language_KEY); //TODO: Set here to override language (until Japanese - 98 and Chinese - 99 are in options).
+	//TODO: Set here to override language (until Japanese - 98 and Chinese - 99 are in options).
+	intLanguage=persist_read_int(Language_KEY); 
 	intLocalTime=persist_read_int(LocalTime_KEY);
 	persist_read_string(TZ1Name_KEY, tz1_name, sizeof(tz1_name));
 	intTZ1=persist_read_int(TZ1Time_KEY);
@@ -1135,6 +1136,13 @@ void handle_init(void)
 	app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values,
 				  ARRAY_LENGTH(initial_values), sync_tuple_changed_callback,
 				  NULL, NULL);
+
+	//Check Battery Status
+	handle_battery(battery_state_service_peek());
+
+	//Check BT Status
+	handle_bluetooth(bluetooth_connection_service_peek());
+
 
 } //HANDLE_INIT
 

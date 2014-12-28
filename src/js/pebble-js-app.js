@@ -31,7 +31,7 @@ function ReturnTimeZones() {
 }
 
 Pebble.addEventListener('showConfiguration', function(e) {
-  var uri = 'http://dabdemon.github.io/WorldTime/settings2.html?' + //Here you need to enter your configuration webservice
+  var uri = 'http://computermacgyver.github.io/WorldTime/settings2.html?' + //Here you need to enter your configuration webservice
 	'language=' + encodeURIComponent(options['language']) +
 	'&LocalTime=' + encodeURIComponent(options['LocalTime']) +
     '&TZ1Name=' + encodeURIComponent(options['TZ1Name']) +
