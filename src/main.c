@@ -496,7 +496,7 @@ static const char *MONTHS[] = {
 //**************************//
 // Check the Battery Status //
 //**************************//
-
+//TODO: Optimize this. Consider text readout of battery
 static void handle_battery(BatteryChargeState charge_state) {
           static char battery_text[] = "100%";
 	
@@ -643,7 +643,9 @@ void getDate()
 			snprintf(tmp_weekday,sizeof(tmp_weekday),"（%s）",WEEKDAYS_JA[ia-1]);
 			strcat(month_text,tmp_weekday);
 		} else {
-			text_layer_set_text(Weekday_Layer, WEEKDAYS_ZH[ia-1]); //Chinese weekday
+			char tmp_weekday[]="星期一";
+			snprintf(tmp_weekday,sizeof(tmp_weekday),"星期%s",WEEKDAYS_ZH[ia-1]);
+			text_layer_set_text(Weekday_Layer, tmp_weekday); //Chinese weekday
 		}
 		
 		/*if (chinese_day) {gbitmap_destroy(chinese_day);}
