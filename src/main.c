@@ -306,6 +306,7 @@ static const char *WEEKDAYS_ZH[]={
 	"六",
 	"日"	
 };
+static char zh_weekday[]="星期一";//Use this to avoid repetition
 
 static const char *MONTHS[] = {
 	NULL,
@@ -639,13 +640,12 @@ void getDate()
 			
 			//Put the Japanese weekday in parenthese after the date.
 			//concat(dest,src) src to the end of the string dest and null terminates dest.
-			char tmp_weekday[]="（月）";
-			snprintf(tmp_weekday,sizeof(tmp_weekday),"（%s）",WEEKDAYS_JA[ia-1]);
-			strcat(month_text,tmp_weekday);
+			char ja_weekday[]="（月）";//Non-static is OK as we will concat to static month_text
+			snprintf(ja_weekday,sizeof(ja_weekday),"（%s）",WEEKDAYS_JA[ia-1]);
+			strcat(month_text,ja_weekday);
 		} else {
-			char tmp_weekday[]="星期一";
-			snprintf(tmp_weekday,sizeof(tmp_weekday),"星期%s",WEEKDAYS_ZH[ia-1]);
-			text_layer_set_text(Weekday_Layer, tmp_weekday); //Chinese weekday
+			snprintf(zh_weekday,sizeof(zh_weekday),"星期%s",WEEKDAYS_ZH[ia-1]);
+			text_layer_set_text(Weekday_Layer, zh_weekday); //Chinese weekday
 		}
 		
 		/*if (chinese_day) {gbitmap_destroy(chinese_day);}
