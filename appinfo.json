@@ -1,68 +1,74 @@
 {
-    "versionLabel": "0.1",
-    "capabilities": [
-        "configurable"
-    ],
-    "shortName": "World Clock",
-    "longName": "World Clock",
-    "versionCode": 1,
-    "uuid": "1e6fc8d6-c6ea-4a43-8540-54ae2bbab727",
-    "resources": {
-        "media": [
-            {
-                "type": "png",
-                "file": "images/bluetooth_white_small2.png",
-                "name": "BT_CONNECTED"
-            },
-            {
-                "type": "png",
-                "file": "images/batt_char.png",
-                "name": "BATT_CHAR"
-            },
-            {
-                "type": "png",
-                "file": "images/batt_empty.png",
-                "name": "BATT_EMPTY"
-            },
-            {
-                "type": "font",
-                "file": "fonts/futura.ttf",
-                "name": "FUTURA_17"
-            },
-            {
-                "type": "font",
-                "file": "fonts/futura.ttf",
-                "name": "FUTURA_14"
-            },
-            {
-                "type": "font",
-                "file": "fonts/futura_condensed_bold-webfont.ttf",
-                "characterRegex": "[0-9:]",
-                "name": "FUTURA_CONDENSED_53"
-            },
-            {
-            	"type":	"font",
-            	"file":	"fonts/mincho.ttf",
-            	"characterRegex": "[0-9日月火水木金土時一二三四五六（）星期]",
-            	"name":	"MINCHO_16",
-            	"note":	"Font from http://ipafont.ipa.go.jp/ipaexfont/download.html#en"
-            }
-        ]
-    },
-    "watchapp": {
-        "watchface": true
-    },
-    "appKeys": {
-        "invert_color": 8,
-        "TZ1Time": 3,
-        "TZ1Name": 2,
-        "TZ2Time": 5,
-        "TZ2Name": 4,                        
-        "TZ3Time": 7,
-        "TZ3Name": 6,
-        "language": 0,
-        "LocalTime": 1
-
-    },
-    "companyName": "Computermacgyver"
+  "versionLabel": "0.1",
+  "capabilities": [
+    "configurable"
+  ],
+  "shortName": "World Clock",
+  "longName": "World Clock",
+  "versionCode": 1,
+  "uuid": "1e6fc8d6-c6ea-4a43-8540-54ae2bbab727",
+  "resources": {
+    "media": [
+      {
+        "type": "png",
+        "file": "images/bluetooth_white_small2.png",
+        "name": "BT_CONNECTED"
+      },
+      {
+        "type": "png",
+        "file": "images/batt_char.png",
+        "name": "BATT_CHAR"
+      },
+      {
+        "type": "png",
+        "file": "images/batt_empty.png",
+        "name": "BATT_EMPTY"
+      },
+      {
+        "type": "font",
+        "file": "fonts/meiryo.ttc",
+        "name": "FUTURA_17"
+      },
+      {
+        "type": "font",
+        "file": "fonts/meiryo.ttc",
+        "name": "FUTURA_14",
+        "characterRegex": "[\u30a1-\u31ff\u30fcA-Za-z0-9:\u6c96\u7e04]"
+      },
+      {
+        "type": "font",
+        "file": "fonts/meiryo.ttc",
+        "characterRegex": "[0-9:]",
+        "name": "MINCHO_44"
+      },
+      {
+        "type": "font",
+        "file": "fonts/meiryo.ttc",
+        "characterRegex": "[0-9\u65e5\u6708\u706b\u6c34\u6728\u91d1\u571f\u6642\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\uff08\uff09\u661f\u671f:]",
+        "name": "MINCHO_16",
+        "note": "Font from http://ipafont.ipa.go.jp/ipaexfont/download.html#en"
+      }
+    ]
+  },
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {
+    "invert_color": 8,
+    "TZ1Time": 3,
+    "TZ1Name": 2,
+    "TZ2Time": 5,
+    "TZ2Name": 4,
+    "TZ3Time": 7,
+    "TZ3Name": 6,
+    "language": 0,
+    "LocalTime": 1
+  },
+  "companyName": "Computermacgyver",
+  "targetPlatforms": [
+    "aplite",
+    "basalt",
+    "chalk"
+  ],
+  "sdkVersion": "3"
 }

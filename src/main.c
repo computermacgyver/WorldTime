@@ -26,13 +26,13 @@ PBL_APP_INFO(MY_UUID,
 #define DATE_FRAME        (GRect(1, 69, 139, 168-62)) 
 
 #define WC1NAME_FRAME     (GRect(5,  102, 105, 168-145))//95
-#define WC1TIME_FRAME     (GRect(100, 102, 41, 168-145))
+#define WC1TIME_FRAME     (GRect(90, 102, 50, 168-145))
 	
 #define WC2NAME_FRAME     (GRect(5,  117, 105, 168-145))//110
-#define WC2TIME_FRAME     (GRect(100, 117, 41, 168-145))
+#define WC2TIME_FRAME     (GRect(90, 117, 50, 168-145))
 	
 #define WC3NAME_FRAME     (GRect(5,  132, 105, 168-145)) //125
-#define WC3TIME_FRAME     (GRect(100, 132, 41, 168-145))
+#define WC3TIME_FRAME     (GRect(90, 132, 50, 168-145))
 	
 //#define WC4NAME_FRAME     (GRect(5,  140, 105, 168-145))
 //#define WC4TIME_FRAME     (GRect(100, 140, 41, 168-145))
@@ -1000,9 +1000,10 @@ void handle_init(void)
 
 
 	//Load the custom fonts
-	res_t = resource_get_handle(RESOURCE_ID_FUTURA_CONDENSED_53); // Time font
+	res_t = resource_get_handle(RESOURCE_ID_MINCHO_44); // Time font
 	res_d = resource_get_handle(RESOURCE_ID_FUTURA_17); // Date font
 	res_u = resource_get_handle(RESOURCE_ID_FUTURA_14); // Last Update font
+		
 	res_cj = resource_get_handle(RESOURCE_ID_MINCHO_16); //Font for Chinese and Japanese day of week, etc.
 	//res_temp =  resource_get_handle(RESOURCE_ID_FUTURA_36); //Temperature
 
