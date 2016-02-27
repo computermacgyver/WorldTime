@@ -81,13 +81,8 @@ PBL_APP_INFO(MY_UUID,
 	bool BTConnected = false;
 
 	//Date & Time	
-	static char last_update[]="00:00 ";
-	//static int initial_minute; //Not used -- SAH
-
 	static char weekday_text[] = "          ";
-	static char date_text[] = "XXX 00";
 	static char month_text[] = "             ";
-	static char day_text[] = "31";
 	static char day_month[]= "31 SEPTEMBER"; 
 	static char time_text[] = "00:00"; 
 
@@ -117,10 +112,6 @@ PBL_APP_INFO(MY_UUID,
 	bool translate_sp = true;
 	//static char language[] = "E";//Never used --SAH
 	int intLanguage = 100;
-	bool color_inverted = false;
-	bool blninverted =  false;
-
-	InverterLayer *inv_layer;
 
 
 enum TimeZoneKey {
@@ -499,7 +490,6 @@ static const char *MONTHS[] = {
 //**************************//
 //TODO: Optimize this. Consider text readout of battery
 static void handle_battery(BatteryChargeState charge_state) {
-          static char battery_text[] = "100%";
 	
 	//kill previous batt_image to avoid invalid ones.
 	if (Batt_image!=NULL) {
@@ -560,29 +550,6 @@ static void handle_bluetooth(bool connected)
 
 
 } //handle_bluetooth
-
-
-//Invert colors
-void InvertColors(bool inverted)
-{
-	
-	if (inverted){
-		//Inverter layer
-		if (blninverted == false){		
-			inv_layer = inverter_layer_create(GRect(0, 0, 144, 168));
-			layer_add_child(window_get_root_layer(my_window), (Layer*) inv_layer);
-			blninverted =  true;
-	    }
-	}
-	
-	else{
-		if(blninverted){
-			inverter_layer_destroy(inv_layer);
-			blninverted = false;}
-	}
-
-	
-}// END - Inver colors
 
 
 //**************************//
@@ -908,13 +875,6 @@ void CalculateTimeZone(int LocalZone, int TimeZone, int GMT) {
 	    getTimeZones();
       	break;
 
-	 case INVERT_COLOR_KEY:
-		  color_inverted = new_tuple->value->uint8 != 0;
-		  persist_write_bool(INVERT_COLOR_KEY, new_tuple->value->uint8 != 0);
-	  		
-	  	  //refresh the layout
-	  	  InvertColors(color_inverted);
-		  break;
   }
 }
 
@@ -977,7 +937,6 @@ void handle_init(void)
     ResHandle res_d;
 	ResHandle res_u;
 	ResHandle res_t;
-	ResHandle res_temp;
 	ResHandle res_cj;
 	
 	
@@ -991,7 +950,6 @@ void handle_init(void)
 	intTZ2=persist_read_int(TZ2Time_KEY);
 	persist_read_string(TZ3Name_KEY, tz3_name, sizeof(tz3_name));
 	intTZ3=persist_read_int(TZ3Time_KEY);
-	color_inverted = persist_read_bool(INVERT_COLOR_KEY);
 
 	//Create the main window
 	my_window = window_create(); 
@@ -1099,9 +1057,6 @@ void handle_init(void)
 		layer_add_child(window_get_root_layer(my_window), text_layer_get_layer(WC3TIME_Layer)); 
 
 
-		//Drawn the normal/inverted based on saved settings
-	    InvertColors(color_inverted);
-
 	// Ensures time is displayed immediately (will break if NULL tick event accessed).
 	  // (This is why it's a good idea to have a separate routine to do the update itself.)
 
@@ -1131,7 +1086,6 @@ void handle_init(void)
 		TupletInteger(TZ2Time_KEY, intTZ2),
 		MyTupletCString(TZ3Name_KEY,tz3_name),
 		TupletInteger(TZ3Time_KEY, intTZ3),
-		TupletInteger(INVERT_COLOR_KEY, color_inverted),
 	}; //TUPLET INITIAL VALUES
 	
 	
