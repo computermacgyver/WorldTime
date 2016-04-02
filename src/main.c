@@ -559,7 +559,7 @@ void getDate()
 {
 	//Get the date
 	time_t actualPtr = time(NULL);
-	struct tm *tz1Ptr = gmtime(&actualPtr);
+	struct tm *tz1Ptr = localtime(&actualPtr);
 		
 	//Try new translation method
 		
